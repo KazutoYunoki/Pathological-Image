@@ -6,7 +6,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import glob
-
+import math
 # 教師データ（ダーモスコピー上の切片色）を扱う関数群
 
 
@@ -52,6 +52,8 @@ def calculate_rgb_ave(img):
 
 # 指定したピクセル数に揃えるための関数（Paddingとか）
 
+# TODO ここのピクセル処理について後で修正（1000や1001になる場合がある)
+
 
 def align_pixels(color_arr, pixel_num):
     """
@@ -81,13 +83,12 @@ def align_pixels(color_arr, pixel_num):
     if(extra_pixel > 0):
 
         h = int(extra_pixel / 2)
-        color_arr = color_arr[h:-(h+1)]
+        color_arr = color_arr[h:-h]
     else:
         for i in range(color_len, pixel_num, 2):
             color_arr = np.insert(color_arr, 0, np.array([0, 0, 0]), axis=0)
             color_arr = np.insert(
                 color_arr, color_arr.shape[0], np.array([0, 0, 0]), axis=0)
-            print(color_arr.shape)
 
     return color_arr
 

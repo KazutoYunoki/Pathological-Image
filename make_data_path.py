@@ -4,14 +4,9 @@ import glob
 # 病理画像のファイルパスのリストを作成する
 
 
-def make_data_path_list(phase="train"):
+def make_data_path_list():
     """
     データのパスを格納したリストを作成
-
-    Parameters
-    ----------
-    phase : 'train' or 'val'
-        訓練データか検証データかを指定
 
     Returns
     ----------
