@@ -7,6 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 
+# 教師データ（ダーモスコピー上の切片色）を扱う関数群
+
 
 def calculate_rgb_ave(img):
     """
