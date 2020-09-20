@@ -52,7 +52,7 @@ def calculate_rgb_ave(img):
 
 # 指定したピクセル数に揃えるための関数（Paddingとか）
 
-# TODO ここのピクセル処理について後で修正（1000や1001になる場合がある)
+# TODO　ピクセル処理の実装を一応見直す（一応修正済み)
 
 
 def align_pixels(color_arr, pixel_num):
@@ -80,13 +80,14 @@ def align_pixels(color_arr, pixel_num):
     extra_pixel = color_len - pixel_num
 
     # 余ったPixelがある場合、真ん中のpixel_numだけ取得
-    if(extra_pixel > 0):
-
+    if(extra_pixel >= 0):
         h = int(extra_pixel / 2)
-        color_arr = color_arr[h:-h]
+        color_arr = color_arr[h:h+1000]
     else:
         for i in range(color_len, pixel_num, 2):
             color_arr = np.insert(color_arr, 0, np.array([0, 0, 0]), axis=0)
+            if(len(color_arr) == 1000):
+                break
             color_arr = np.insert(
                 color_arr, color_arr.shape[0], np.array([0, 0, 0]), axis=0)
 
