@@ -58,10 +58,9 @@ class PathologicalImage(data.Dataset):
         # 指定したピクセル数で整形
         color_arr = align_pixels(rgb_ave, self.num_pixels)
 
-        # TODO ラベルの正規化をどうするか？
-        # ラベルの前処理 labelにダーモスコピー上の色情報（1000×3）
-        label_transformed = LabelTransform()
-        label = label_transformed(color_arr, self.phase)
+        # ラベルに色情報
+        # TODO ラベルの形状は次元を落としても大丈夫なのか？現在（8, 3, 1024) →（8, 3, 1, 1024) にしなくて良いか？　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+        label = color_arr
 
         # print(img_path)
         # print(teacher_list[index])

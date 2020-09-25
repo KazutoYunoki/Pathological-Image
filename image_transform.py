@@ -27,7 +27,7 @@ class ImageTransform():
         return self.data_transform[phase](img)
 
 
-# TODO ラベルの正規化をどうするか？　transforms.ToTensor()の動作の確認。画素値を225で割っているのかどうか？
+# TODO ラベルの前処理をどうするか？　データオーグメンテーションなど
 class LabelTransform():
     """
     ラベルの前処理を行うクラス

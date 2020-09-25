@@ -32,7 +32,7 @@ def main():
     batch_iterator = iter(train_dataloader)
     inputs, labels = next(batch_iterator)
     print(inputs.size())
-    print(labels)
+    print(labels.shape)
 
 
 if __name__ == "__main__":

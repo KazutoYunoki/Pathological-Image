@@ -93,6 +93,9 @@ def align_pixels(color_arr, pixel_num):
             color_arr = np.insert(
                 color_arr, color_arr.shape[0], np.array([0, 0, 0]), axis=0)
 
+    #　深層学習内では[チャンネル数]、[高さ]、[幅]なので軸を入れ替える
+    color_arr = color_arr.transpose(1, 0)
+
     return color_arr
 
 

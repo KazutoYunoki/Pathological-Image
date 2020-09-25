@@ -47,18 +47,21 @@ class vgg_fcn(nn.Module):
         self.classifier = nn.Sequential(
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(in_features=4096, out_features=4096),
+            nn.Linear(in_features=4096, out_features=4096, bias=True),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=0.5, inplace=True),
+            nn.Linear(in_features=4096, out_features=1000, bias=True)
         )
 
     def forward(self, input):
         output = self.features(input)
         output = self.avgpool(output)
-        output = output.view(1000, 1, -1)
+        output = output.view(1, -1)
         output = self.classifier(output)
         return output
 
 
-class FCN8s(nn.Module):
+class FCNs(nn.Module):
     def __init__(self):
         super(FCN8s, self).__init__()
 
@@ -176,6 +179,7 @@ if __name__ == "__main__":
     input = torch.randn(1, 3, 224, 224)
 
     output = net(input)
+    print(output.shape)
     print(output.shape)
     '''
     print(net)
