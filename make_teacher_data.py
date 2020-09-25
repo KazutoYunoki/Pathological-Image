@@ -82,11 +82,11 @@ def align_pixels(color_arr, pixel_num):
     # 余ったPixelがある場合、真ん中のpixel_numだけ取得
     if(extra_pixel >= 0):
         h = int(extra_pixel / 2)
-        color_arr = color_arr[h:h+1000]
+        color_arr = color_arr[h:h+pixel_num]
     else:
         for i in range(color_len, pixel_num, 2):
             color_arr = np.insert(color_arr, 0, np.array([0, 0, 0]), axis=0)
-            if(len(color_arr) == 1000):
+            if(len(color_arr) == pixel_num):
                 break
             color_arr = np.insert(
                 color_arr, color_arr.shape[0], np.array([0, 0, 0]), axis=0)

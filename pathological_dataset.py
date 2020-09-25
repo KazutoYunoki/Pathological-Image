@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch.utils.data as data
 from PIL import Image
-from image_transform import ImageTransform
+from image_transform import ImageTransform, LabelTransform
 from make_teacher_data import make_crop_img_list, calculate_rgb_ave, align_pixels
 
 
@@ -20,12 +20,16 @@ class PathologicalImage(data.Dataset):
 
     phase: 'train' or 'val'
         学習用か訓練用かを設定
+
+    num_pixels: int
+        教師データのラベルに使用するピクセル数を指定
     """
 
-    def __init__(self, file_list, transform=None, phase='train'):
+    def __init__(self, file_list, transform=None, phase='train', num_pixels=1024):
         self.file_list = file_list  # ファイルパスのリスト
         self.transform = transform  # 画像の前処理のインスタンス
         self.phase = phase
+        self.num_pixels = num_pixels
 
     def __len__(self):
         '''画像の枚数を返す'''
@@ -43,6 +47,7 @@ class PathologicalImage(data.Dataset):
         # 画像の前処理を実施
         img_transformed = self.transform(img, self.phase)
 
+        print(img_transformed)
         # 教師データ(青いボックスでクロップした画像）のファイルパスを取得
         teacher_list = make_crop_img_list()
         crop_img = np.array(Image.open(teacher_list[index]))
@@ -51,13 +56,15 @@ class PathologicalImage(data.Dataset):
         rgb_ave = calculate_rgb_ave(crop_img)
 
         # 指定したピクセル数で整形
-        color_arr = align_pixels(rgb_ave, 1000)
+        color_arr = align_pixels(rgb_ave, self.num_pixels)
 
-        # labelにダーモスコピー上の色情報（1000×3）
-        label = color_arr
+        # TODO ラベルの正規化をどうするか？
+        # ラベルの前処理 labelにダーモスコピー上の色情報（1000×3）
+        label_transformed = LabelTransform()
+        label = label_transformed(color_arr, self.phase)
 
-        print(img_path)
-        print(teacher_list[index])
+        # print(img_path)
+        # print(teacher_list[index])
 
         return img_transformed, label
 
@@ -69,7 +76,7 @@ def main():
     plt.imshow(img)
     plt.show()
 
-    size = (512, 1024)
+    size = (224, 224)
     mean = (0.485, 0.456, 0.406)
     std = (0.229, 0.224, 0.225)
 
@@ -84,4 +91,4 @@ def main():
 
 
 if __name__ == "__main__":
-    pass
+    main()
