@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 import math
+import torch
 # 教師データ（ダーモスコピー上の切片色）を扱う関数群
 
 
@@ -34,19 +35,20 @@ def calculate_rgb_ave(img):
     ave_g = np.average(img_g, axis=0)
     ave_b = np.average(img_b, axis=0)
 
-    # それぞれの色情報を正規化する
+    # それぞれの色情報を正規化する(0-1)
     for i in range(ave_r.size):
-        ave_r[i] = ave_r[i] / 255
-        ave_g[i] = ave_g[i] / 255
-        ave_b[i] = ave_r[i] / 255
+
+        ave_r[i] = float(ave_r[i]) / float(255)
+        ave_g[i] = float(ave_g[i]) / float(255)
+        ave_b[i] = float(ave_b[i]) / float(255)
 
     # R,G,Bの色情報の平均を1つにまとめる(例 1000*3チャンネル)
     rgb_ave = []
     for i in range(ave_r.size):
         rgb_ave.append([ave_r[i], ave_g[i], ave_b[i]])
 
-    # np.array型（int）に変換して保存
-    rgb_ave = np.array(rgb_ave, dtype=np.int64)
+    # np.array型（float）に変換して保存
+    rgb_ave = np.array(rgb_ave, dtype=np.float32)
 
     return rgb_ave
 
@@ -123,6 +125,7 @@ def make_crop_img_list():
 if __name__ == "__main__":
     im = Image.open('./data/9497/outputs/crop_img.png')
     #im = np.array(im)
+    im = np.array(im)
 
-    re = make_crop_img_list()
-    print(len(re))
+    result = calculate_rgb_ave(im)
+    print(result)
