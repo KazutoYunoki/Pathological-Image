@@ -34,11 +34,11 @@ def calculate_rgb_ave(img):
     ave_g = np.average(img_g, axis=0)
     ave_b = np.average(img_b, axis=0)
 
-    # それぞれの色情報を整数値に丸める
+    # それぞれの色情報を正規化する
     for i in range(ave_r.size):
-        ave_r[i] = round(ave_r[i])
-        ave_g[i] = round(ave_g[i])
-        ave_b[i] = round(ave_b[i])
+        ave_r[i] = ave_r[i] / 255
+        ave_g[i] = ave_g[i] / 255
+        ave_b[i] = ave_r[i] / 255
 
     # R,G,Bの色情報の平均を1つにまとめる(例 1000*3チャンネル)
     rgb_ave = []
