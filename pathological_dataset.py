@@ -47,7 +47,6 @@ class PathologicalImage(data.Dataset):
         # 画像の前処理を実施
         img_transformed = self.transform(img, self.phase)
 
-        print(img_transformed)
         # 教師データ(青いボックスでクロップした画像）のファイルパスを取得
         teacher_list = make_crop_img_list()
         crop_img = np.array(Image.open(teacher_list[index]))

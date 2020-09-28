@@ -63,7 +63,7 @@ class vgg_fcn(nn.Module):
 
 class FCNs(nn.Module):
     def __init__(self):
-        super(FCN8s, self).__init__()
+        super(FCNs, self).__init__()
 
         # conv1
         self.conv1 = nn.Sequential(
@@ -156,6 +156,7 @@ class FCNs(nn.Module):
         )
 
     def forward(self, input):
+        print(input.shape)
         output = self.conv1(input)
         output = self.conv2(output)
         output = self.conv3(output)
@@ -168,19 +169,21 @@ class FCNs(nn.Module):
         output = self.up10(output)
         output = self.up11(output)
         output = self.last(output)
-        output = output.view(1, 3, 32*32)
+        output = output.view(input.shape[0], 3, 32*32)
+
         return output
 
 
 if __name__ == "__main__":
 
-    net = FCN8s()
+    net = FCNs()
     print(net)
-    input = torch.randn(1, 3, 224, 224)
+    input = torch.randn(8, 3, 224, 224)
+    print(type(input.shape[0]))
 
-    output = net(input)
-    print(output.shape)
-    print(output.shape)
+    #output = net(input)
+    # print(output.shape)
+    # print(output.shape)
     '''
     print(net)
     conv1 = nn.Conv2d(4096, 512, 1)

@@ -6,20 +6,18 @@ class ImageTransform():
     画像の前処理を行うクラス
     """
 
-    def __init__(self, resize, mean, std):
+    def __init__(self, resize):
         self.data_transform = {
             'train': transforms.Compose([
                 transforms.Resize(resize),
                 transforms.CenterCrop(resize),
-                # transforms.RandomHorizontalFlip(),
+                # transforms.RandomHorizontalFlip()
                 transforms.ToTensor(),
-                #transforms.Normalize(mean, std)
             ]),
             'val': transforms.Compose([
                 transforms.Resize(resize),
                 transforms.CenterCrop(resize),
                 transforms.ToTensor(),
-                #transforms.Normalize(mean, std)
             ])
         }
 

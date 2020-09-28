@@ -21,7 +21,6 @@ def make_data_path_list():
     # データセットのルートパス
     rootpath = current_dir + '/data/'
     target_path = osp.join(rootpath + "/**/resize*")
-    print(target_path)
 
     path_list = []
 
