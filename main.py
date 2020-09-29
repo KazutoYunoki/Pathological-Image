@@ -7,38 +7,37 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import logging
+import hydra
+
+# A logger for this file
+log = logging.getLogger(__name__)
 
 
-def main():
+@hydra.main(config_name="parameters")
+def main(cfg):
     # 病理画像のデータのリストを取得
     data_dir = make_data_path_list()
 
-    size = (224, 224)
-    mean = (0.485, 0.456, 0.406)
-    std = (0.229, 0.224, 0.225)
-
     #　データセットの作成
     train_dataset = PathologicalImage(
-        file_list=data_dir, transform=ImageTransform(size), num_pixels=1024)
+        file_list=data_dir, transform=ImageTransform(cfg.size), num_pixels=cfg.num_pixels)
 
     #　動作確認
     print("入力画像サイズ：" + str(train_dataset.__getitem__(0)[0].size()))
     print("教師データサイズ：" + str(train_dataset.__getitem__(0)[1].shape))
 
-    # ミニバッチのサイズを指定
-    batch_size = 8
-
     # DataLoaderを作成
     train_dataloader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=batch_size, shuffle=True
+        train_dataset, batch_size=cfg.batch_size, shuffle=True
     )
 
     #　動作確認
     batch_iterator = iter(train_dataloader)
     inputs, labels = next(batch_iterator)
-    print("-----DataLoaderの画像とラベルの形状-----")
-    print("入力データ：" + str(inputs.size()))
-    print("入力ラベル：" + str(labels.shape))
+    log.info("-----Image and label shape of dataloader-----")
+    log.info("入力データ：" + str(inputs.size()))
+    log.info("入力ラベル：" + str(labels.shape))
 
     # GPU初期設定
     # ネットワークモデル(自作FCNs)をimport
@@ -48,23 +47,24 @@ def main():
     net = FCNs()
     net.to(device)
     torch.backends.cudnn.benchmark = True
-    print("-----ネットワークの構成-----")
-    print(net)
+    log.info("-----Constitution of network-----")
+    log.info(net)
 
     # 損失関数の設定
     criterion = nn.MSELoss()
 
     # 最適化手法の設定
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=cfg.SGD.lr, momentum=cfg.SGD.lr)
+    log.info("-----Details of optimizer function-----")
+    log.info(optimizer)
 
     # 損失値を保持するリスト
     train_loss = []
 
     # 学習
-    num_epochs = 2
-    for epoch in range(num_epochs):
-        print("Epoch {} / {} ".format(epoch + 1, num_epochs))
-        print("----------")
+    for epoch in range(cfg.num_epochs):
+        log.info("Epoch {} / {} ".format(epoch + 1, cfg.num_epochs))
+        log.info("----------")
 
         #　学習
         train_history = train_model(
@@ -75,10 +75,10 @@ def main():
 
     # figインスタンスとaxインスタンスを作成
     fig_loss, ax_loss = plt.subplots(figsize=(10, 10))
-    ax_loss.plot(range(1, num_epochs + 1, 1),
+    ax_loss.plot(range(1, cfg.num_epochs + 1, 1),
                  train_loss, label="train_loss")
     ax_loss.set_xlabel("epoch")
-    fig_loss.savefig(loss.png)
+    fig_loss.savefig("loss.png")
 
     # パラメータの保存
     save_path = './pathological.pth'

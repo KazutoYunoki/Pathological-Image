@@ -1,7 +1,12 @@
 from tqdm import tqdm
 import torch
+import logging
 
 # TODO 検証用の関数の実装
+# TODO outputの値をうまい具合に保存。二値分類みたいに正解率は出せないため。
+
+# A logger for this file
+log = logging.getLogger(__name__)
 
 
 def train_model(net, train_dataloader, criterion, optimizer):
@@ -55,6 +60,6 @@ def train_model(net, train_dataloader, criterion, optimizer):
     # epochごとのlossを計算
     epoch_loss = epoch_loss / len(train_dataloader.dataset)
 
-    print("Train Loss: {:.4f}".format(epoch_loss))
+    log.info("Train Loss: {:.4f}".format(epoch_loss))
 
     return epoch_loss

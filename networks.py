@@ -156,7 +156,6 @@ class FCNs(nn.Module):
         )
 
     def forward(self, input):
-        print(input.shape)
         output = self.conv1(input)
         output = self.conv2(output)
         output = self.conv3(output)
