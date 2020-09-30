@@ -63,3 +63,48 @@ def train_model(net, train_dataloader, criterion, optimizer):
     log.info("Train Loss: {:.4f}".format(epoch_loss))
 
     return epoch_loss
+
+
+def test_model(net, test_dataloader, criterion):
+    """
+    モデルで検証させる関数
+    Parameters
+    ----------
+    net :
+        ネットワークモデル
+    test_dataloader :
+        テスト用のデータローダ
+    criterion :
+        損失関数
+    Returns
+    -------
+    epoch_loss :
+        エポックあたりの損失値
+    """
+    # GPU初期設定
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    # 評価モードへ変更
+    net.eval()
+
+    epoch_loss = 0.0
+
+    for inputs, labels in tqdm(test_dataloader, leave=False):
+
+        # GPUにデータを送る
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        with torch.set_grad_enabled(False):
+            outputs = net(inputs)
+
+            loss = criterion(outputs, labels)
+
+        epoch_loss += loss.item() * inputs.size(0)
+
+    # epochごとのlossの計算
+    epoch_loss = epoch_loss / len(test_dataloader.dataset)
+
+    log.info("Test Loss: {:.4f}".format(epoch_loss))
+
+    return epoch_loss

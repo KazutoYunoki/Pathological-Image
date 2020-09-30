@@ -54,7 +54,7 @@ def calculate_rgb_ave(img):
 
 # 指定したピクセル数に揃えるための関数（Paddingとか）
 
-# TODO　ピクセル処理の実装を一応見直す（一応修正済み)
+# TODO　ラベルのピクセル数のとり方の処理（現在：0パディング）
 
 
 def align_pixels(color_arr, pixel_num):
