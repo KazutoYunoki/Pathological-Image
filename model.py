@@ -1,9 +1,8 @@
 from tqdm import tqdm
+from pathlib import Path
 import torch
+import csv
 import logging
-
-# TODO 検証用の関数の実装
-# TODO outputの値をうまい具合に保存。二値分類みたいに正解率は出せないため。
 
 # A logger for this file
 log = logging.getLogger(__name__)
@@ -101,6 +100,8 @@ def test_model(net, test_dataloader, criterion):
             loss = criterion(outputs, labels)
 
         epoch_loss += loss.item() * inputs.size(0)
+        # outputとlabelをcsvファイルに出力
+        save_output_date(outputs, labels, phase='val')
 
     # epochごとのlossの計算
     epoch_loss = epoch_loss / len(test_dataloader.dataset)
@@ -108,3 +109,33 @@ def test_model(net, test_dataloader, criterion):
     log.info("Test Loss: {:.4f}".format(epoch_loss))
 
     return epoch_loss
+
+
+def save_output_date(output_data, label_data, phase):
+    """
+    ネットワークの出力結果とラベルをCSVファイルに保存する関数
+    Parameters
+    ----------
+    output_data: tensor
+        ネットワークの出力結果
+    label_data: tensor
+        ラベルデータ
+    phase : train or val
+        学習データか検証データか指定
+    """
+    # outputsとlabelsをTensorからnumpyへ変更
+    outputs = output_data.cpu().numpy()
+    labels = label_data.cpu().numpy()
+
+    # 出力先のディレクトリを作成
+    output_dir = Path('./' + phase + '_output_color')
+    output_dir.mkdir(exist_ok=True)
+
+    # CSVファイルを用意して予測結果とラベルを書き込み
+    with open(str(output_dir) + '/color.csv', 'a') as f:
+        writer = csv.writer(f)
+        for i in range(len(outputs)):
+            writer.writerow(['予測結果:' + str(i)])
+            writer.writerows(outputs[i])
+            writer.writerow(['ラベル:' + str(i)])
+            writer.writerows(labels[i])

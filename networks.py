@@ -2,9 +2,12 @@ from torchvision import models
 import torch.nn as nn
 import numpy as np
 import torch
+import csv
+from pathlib import Path
 
 
 class vgg_fcn(nn.Module):
+
     def __init__(self):
         super(vgg_fcn, self).__init__()
 
@@ -62,6 +65,11 @@ class vgg_fcn(nn.Module):
 
 
 class FCNs(nn.Module):
+    """
+    Full Convolutional network(FCN8s)の実装
+    独自にカスタマイズしてあるネットワークモデル
+    """
+
     def __init__(self):
         super(FCNs, self).__init__()
 
@@ -154,6 +162,7 @@ class FCNs(nn.Module):
         self.last = nn.Sequential(
             nn.Conv2d(64, 3, 1)
         )
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, input):
         output = self.conv1(input)
@@ -168,6 +177,7 @@ class FCNs(nn.Module):
         output = self.up10(output)
         output = self.up11(output)
         output = self.last(output)
+        output = self.sigmoid(output)
         output = output.view(input.shape[0], 3, 32*32)
 
         return output
@@ -177,13 +187,26 @@ if __name__ == "__main__":
 
     net = FCNs()
     print(net)
-    input = torch.randn(8, 3, 224, 224)
-    print(type(input.shape[0]))
 
-    #output = net(input)
-    # print(output.shape)
-    # print(output.shape)
-    '''
+    output = torch.randn(8, 3, 1024)
+    print(output[0].shape)
+
+    output = output.cpu().numpy()
+    print(output.shape)
+
+    output_dir = Path('./output_color')
+    output_dir.mkdir(exist_ok=True)
+
+    output_dir = str(output_dir)
+
+    print(len(output))
+    """
+    with open(output_dir + '/color.csv', 'a') as f:
+        writer = csv.writer(f)
+        for i in range(8):
+            writer.writerow(['予測結果'])
+            writer.writerows(output[i])
+    
     print(net)
     conv1 = nn.Conv2d(4096, 512, 1)
     conv2 = nn.ConvTranspose2d(512, 512, 4, stride=2, bias=False)
@@ -217,4 +240,4 @@ if __name__ == "__main__":
     print(output.shape)
     output = output.view(1, 3, 32*32)
     print(output.shape)
-    '''
+    """
