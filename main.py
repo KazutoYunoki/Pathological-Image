@@ -2,7 +2,7 @@ from pathological_dataset import PathologicalImage
 from make_data_path import make_data_path_list
 from image_transform import ImageTransform
 from networks import FCNs
-from model import train_model, test_model
+from model import train_model, val_model, test_model
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
@@ -94,10 +94,13 @@ def main(cfg):
         train_loss.append(train_history)
 
         # 検証
-        val_history = test_model(net, val_dataloader, criterion)
+        val_history = val_model(net, val_dataloader, criterion)
 
         #　検証したlossのリスト作成
         val_loss.append(val_history)
+
+    # テストと出力値保存
+    test_history = test_model(net, val_dataloader, criterion)
 
     # figインスタンスとaxインスタンスを作成
     fig_loss, ax_loss = plt.subplots(figsize=(10, 10))
