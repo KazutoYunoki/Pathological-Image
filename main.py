@@ -14,6 +14,8 @@ import hydra
 # A logger for this file
 log = logging.getLogger(__name__)
 
+# TODO ネットワークにSigmoid関数を通してからlossの下がりが悪すぎる原因の究明
+
 
 @hydra.main(config_name="parameters")
 def main(cfg):
@@ -70,7 +72,8 @@ def main(cfg):
     criterion = nn.MSELoss()
 
     # 最適化手法の設定
-    optimizer = optim.SGD(net.parameters(), lr=cfg.SGD.lr, momentum=cfg.SGD.lr)
+    optimizer = optim.SGD(net.parameters(), lr=cfg.SGD.lr,
+                          momentum=cfg.SGD.momentum)
     log.info("-----Details of optimizer function-----")
     log.info(optimizer)
 

@@ -140,29 +140,33 @@ class FCNs(nn.Module):
         # 以下custom up8
         self.up8 = nn.Sequential(
             nn.Conv2d(4096, 512, 1),
-            nn.ConvTranspose2d(512, 512, 4, stride=2, bias=False)
+            nn.ConvTranspose2d(512, 512, 4, stride=2, bias=False),
+            nn.ReLU(inplace=True)
         )
 
         # up9
         self.up9 = nn.Sequential(
             nn.Conv2d(512, 256, 1),
-            nn.ConvTranspose2d(256, 256, 4, stride=2, padding=1, bias=False)
+            nn.ConvTranspose2d(256, 256, 4, stride=2, padding=1, bias=False),
+            nn.ReLU(inplace=True)
         )
         # up10
         self.up10 = nn.Sequential(
             nn.Conv2d(256, 128, 1),
-            nn.ConvTranspose2d(128, 128, 4, stride=2, padding=1, bias=False)
+            nn.ConvTranspose2d(128, 128, 4, stride=2, padding=1, bias=False),
+            nn.ReLU(inplace=True)
         )
 
         self.up11 = nn.Sequential(
             nn.Conv2d(128, 64, 1),
-            nn.ConvTranspose2d(64, 64, 4, stride=2, padding=1, bias=False)
+            nn.ConvTranspose2d(64, 64, 4, stride=2, padding=1, bias=False),
+            nn.ReLU(inplace=True)
         )
 
         self.last = nn.Sequential(
-            nn.Conv2d(64, 3, 1)
+            nn.Conv2d(64, 3, 1),
+            nn.Tanh()
         )
-        self.sigmoid = nn.Sigmoid()
 
     def forward(self, input):
         output = self.conv1(input)
@@ -177,7 +181,6 @@ class FCNs(nn.Module):
         output = self.up10(output)
         output = self.up11(output)
         output = self.last(output)
-        output = self.sigmoid(output)
         output = output.view(input.shape[0], 3, 32*32)
 
         return output
@@ -188,18 +191,6 @@ if __name__ == "__main__":
     net = FCNs()
     print(net)
 
-    output = torch.randn(8, 3, 1024)
-    print(output[0].shape)
-
-    output = output.cpu().numpy()
-    print(output.shape)
-
-    output_dir = Path('./output_color')
-    output_dir.mkdir(exist_ok=True)
-
-    output_dir = str(output_dir)
-
-    print(len(output))
     """
     with open(output_dir + '/color.csv', 'a') as f:
         writer = csv.writer(f)
