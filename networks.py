@@ -140,6 +140,7 @@ class FCNs(nn.Module):
         # 以下custom up8
         self.up8 = nn.Sequential(
             nn.Conv2d(4096, 512, 1),
+            nn.ReLU(inplace=True),
             nn.ConvTranspose2d(512, 512, 4, stride=2, bias=False),
             nn.ReLU(inplace=True)
         )
@@ -147,18 +148,21 @@ class FCNs(nn.Module):
         # up9
         self.up9 = nn.Sequential(
             nn.Conv2d(512, 256, 1),
+            nn.ReLU(inplace=True),
             nn.ConvTranspose2d(256, 256, 4, stride=2, padding=1, bias=False),
             nn.ReLU(inplace=True)
         )
         # up10
         self.up10 = nn.Sequential(
             nn.Conv2d(256, 128, 1),
+            nn.ReLU(inplace=True),
             nn.ConvTranspose2d(128, 128, 4, stride=2, padding=1, bias=False),
             nn.ReLU(inplace=True)
         )
 
         self.up11 = nn.Sequential(
             nn.Conv2d(128, 64, 1),
+            nn.ReLU(inplace=True),
             nn.ConvTranspose2d(64, 64, 4, stride=2, padding=1, bias=False),
             nn.ReLU(inplace=True)
         )
