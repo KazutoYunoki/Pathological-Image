@@ -1,0 +1,19 @@
+# image_size
+size: [224, 224]
+
+# color pixels of dermoscopy image
+num_pixels: 1024
+
+# rate of use of training data
+rate: 0.85
+
+# batch size
+batch_size: 4
+
+# parameters of momentumSGD
+SGD:
+  lr: 0.001
+  momentum: 0.9
+
+# number of epochs
+num_epochs: 3
