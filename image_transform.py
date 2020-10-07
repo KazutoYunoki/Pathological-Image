@@ -25,7 +25,7 @@ class ImageTransform():
         return self.data_transform[phase](img)
 
 
-# TODO ラベルの前処理をどうするか？　データオーグメンテーションなど
+# TODO ラベルの前処理をどうするか？　データオーグメンテーションなど(まだ未実装)
 class LabelTransform():
     """
     ラベルの前処理を行うクラス
